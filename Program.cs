@@ -169,7 +169,7 @@ namespace Connect4
              * 9 = row - 1, column + 1
              */
             List<(int, int)> winCoordList = new List<(int, int)>();
-            if (_playCount < 7) return winCoordList;
+            if (_playCount < (_contigousWinCondition * 2 - 1)) return winCoordList;
 
             var cond = _contigousWinCondition;
             for (int row = 0; row < Board.GetLength(0); row++)
