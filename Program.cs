@@ -61,7 +61,15 @@ namespace Connect4
                 int x;
                 if (int.TryParse(Console.ReadLine(), out x))
                 {
-                    printBoard(board.Place(currentPlayer, x));
+                    try
+                    {
+                        printBoard(board.Place(currentPlayer, x));
+                    }
+                    catch(IndexOutOfRangeException)
+                    {
+                        Console.WriteLine("Invalid move. Try again.");
+                    }
+
                     Console.WriteLine("");
 
                 }
@@ -219,7 +227,6 @@ namespace Connect4
 
         private string[,] place(string player, int column, int row = 0)
         {
-            //TODO: test for full or invalid column
             var coords = (Board.GetLength(0) - 1 - row, column - 1);
 
             if (string.IsNullOrEmpty(Board[coords.Item1, coords.Item2]))
