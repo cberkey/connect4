@@ -114,6 +114,14 @@ namespace Connect4
 
         private static void printBoard(string[,] board)
         {
+            //print column labels
+            for (int col = 0; col < board.GetLength(1); col++)
+            {
+                Console.ForegroundColor = _boardColor;
+                Console.Write($" {col + 1} ");
+            }
+            Console.WriteLine();
+
             for (int row = 0; row < board.GetLength(0); row++)
             {
                 for (int col = 0; col < board.GetLength(1); col++)
