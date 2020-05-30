@@ -42,46 +42,74 @@ namespace Connect4
             _player2 = Console.ReadLine();
             Console.WriteLine($"Welcome {_player2}!");
 
-            var board = new Connect4Game();
-            printBoard(board.Board);
+            var score = new Dictionary<string, int> {
+                { _player1, 0},
+                { _player2, 0 }
+            };
 
-            Console.WriteLine("");
-
-            while (board.WinCoords().Count == 0)
+            var quit = false;
+            while (quit == false)
             {
-                var currentPlayer = _player1;
-                if (board.LastPlayer == _player1) currentPlayer = _player2;
+                var board = new Connect4Game();
+                printBoard(board.Board);
 
-                writeSegments(new[]
+                Console.WriteLine("");
+
+                while (board.WinCoords().Count == 0 && !board.IsDraw())
                 {
+                    var currentPlayer = _player1;
+                    if (board.LastPlayer == _player1) currentPlayer = _player2;
+
+                    writeSegments(new[]
+                    {
                     (currentPlayer, currentPlayer == _player1 ? _player1Color : _player2Color),
                     ("'s turn.  Select a column to place your piece: ", _defaultColor)
                 });
 
-                int x;
-                if (int.TryParse(Console.ReadLine(), out x))
+                    if (int.TryParse(Console.ReadLine(), out int x))
+                    {
+                        try
+                        {
+                            printBoard(board.Place(currentPlayer, x));
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            Console.WriteLine("Invalid move. Try again.");
+                        }
+
+                        Console.WriteLine("");
+
+                    }
+                    else
+                    {
+                        //wrong input
+                    }
+                }
+
+                if (board.IsDraw())
                 {
-                    try
-                    {
-                        printBoard(board.Place(currentPlayer, x));
-                    }
-                    catch(IndexOutOfRangeException)
-                    {
-                        Console.WriteLine("Invalid move. Try again.");
-                    }
-
-                    Console.WriteLine("");
-
+                    Console.WriteLine($"Draw!");
                 }
                 else
                 {
-                    //wrong input
+                    Console.WriteLine($"Congratulations {board.LastPlayer}!");
+                    score[board.LastPlayer] = score[board.LastPlayer] + 1;
                 }
+
+                Console.WriteLine($"{_player1}: {score[_player1]}");
+                Console.WriteLine($"{_player2}: {score[_player2]}");
+                Console.WriteLine("");
+
+                string again = string.Empty;
+                while (again != "y" && again != "n")
+                {
+                    Console.WriteLine("Play again? (y/n)");
+                    again = Console.ReadLine();
+                }
+
+                quit = again == "n";
             }
 
-            Console.WriteLine($"Congratulations {board.LastPlayer}!");
-
-            Console.ReadLine();
         }
 
         private static void printBoard(string[,] board)
@@ -144,6 +172,11 @@ namespace Connect4
             Board = new string[rowCount, columnCount];
             _playerCount = playerCount;
             _contigousWinCondition = contiguousWinCondition;
+        }
+
+        public bool IsDraw()
+        {
+            return _playCount == Board.GetLength(0) * Board.GetLength(1);
         }
 
         public string[,] Place(string player, int column)
