@@ -53,6 +53,7 @@ namespace Connect4
             while (quit == false)
             {
                 _game = new Connect4Game();
+                //_game = new Connect4Game(12, 11, 2, 6);
                 printBoard(_game.Board);
 
                 Console.WriteLine("");
